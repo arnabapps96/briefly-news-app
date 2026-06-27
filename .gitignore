@@ -1,0 +1,10 @@
+# Environment variables (contains private API keys)
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS generated files
+.DS_Store
+Thumbs.db
