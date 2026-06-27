@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const readerBody = document.getElementById('reader-body');
   const readerSourceLink = document.getElementById('reader-source-link');
   const readerBookmarkBtn = document.getElementById('reader-bookmark-btn');
+  const readerProgressText = document.getElementById('reader-progress-text');
   const nextArticleNav = document.getElementById('next-article-nav');
   const nextArticleTitle = document.getElementById('next-article-title');
 
@@ -43,6 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('briefly_theme', newTheme);
     updateThemeIcon(newTheme);
+    
+    // Rerender layout to update dynamic SVGs for current theme
+    renderStories();
   });
 
   function updateThemeIcon(theme) {
@@ -51,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : `<svg viewBox="0 0 24 24"><path d="M12.1 12.1c-.8.8-2 1.3-3.3 1.3-2.6 0-4.7-2.1-4.7-4.7 0-1.3.5-2.5 1.3-3.3C3.6 6.5 2 9.1 2 12c0 5.5 4.5 10 10 10 2.9 0 5.5-1.6 6.6-3.4-.8.8-2 1.3-3.3 1.3-2.6 0-4.7-2.1-4.7-4.7 0-1.3.5-2.5 1.5-3.1z"/></svg>`;
   }
 
-  // Load Data (with no-store cache control for fresh daily briefs)
+  // Load Data
   fetch('data/stories.json', { cache: 'no-store' })
     .then(res => {
       if (!res.ok) throw new Error('Data file not found');
@@ -66,13 +70,103 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Error fetching stories:', err);
       storyListEl.innerHTML = `
         <div class="empty-state">
-          <h3 class="empty-state-title">Something went wrong</h3>
-          <p class="empty-state-text">Could not load today's briefs. Please run update_news.py and refresh.</p>
+          <div class="empty-state-card">
+            <h3 class="empty-state-title">Something went wrong</h3>
+            <p class="empty-state-text">Could not load today's briefs. Please run update_news.py and refresh.</p>
+          </div>
         </div>
       `;
     });
 
+  // Humanize reading time labels
+  function formatReadTime(minutes) {
+    if (minutes <= 1) return '60 sec';
+    if (minutes === 2) return '2 min';
+    if (minutes === 3) return 'Quick read';
+    if (minutes === 4) return 'Medium read';
+    return 'Deep read';
+  }
+
+  // Dynamic Abstract Geometric Editorial Artwork Generator
+  function generateAbstractArtwork(category) {
+    const colors = {
+      'World': { primary: '#9c8e75', secondary: '#FAF9F6' },
+      'India': { primary: '#df8137', secondary: '#FFF8F2' },
+      'Business': { primary: '#378b60', secondary: '#F2FAF5' },
+      'Technology': { primary: '#4e8098', secondary: '#F2F7FA' },
+      'Science': { primary: '#8652cc', secondary: '#F7F2FA' },
+      'Sports': { primary: '#c54848', secondary: '#FAF2F2' },
+      'Entertainment': { primary: '#bfa054', secondary: '#FAF8F2' }
+    };
+    
+    const theme = document.documentElement.getAttribute('data-theme') || 'light';
+    const c = colors[category] || { primary: '#8C7B65', secondary: '#FAF9F6' };
+    
+    const fillAccent = c.primary;
+    const fillBg = theme === 'dark' ? '#14171A' : c.secondary;
+    const strokeColor = theme === 'dark' ? '#ECE9DF' : '#1A1A1A';
+    const opacity = theme === 'dark' ? '0.12' : '0.06';
+    
+    return `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="100%" height="100%">
+        <rect width="100%" height="100%" fill="${fillBg}"/>
+        
+        <!-- Abstract Grid -->
+        <g stroke="${strokeColor}" stroke-width="0.5" opacity="${opacity}">
+          <line x1="100" y1="0" x2="100" y2="280"/>
+          <line x1="200" y1="0" x2="200" y2="280"/>
+          <line x1="300" y1="0" x2="300" y2="280"/>
+          <line x1="400" y1="0" x2="400" y2="280"/>
+          <line x1="500" y1="0" x2="500" y2="280"/>
+          <line x1="600" y1="0" x2="600" y2="280"/>
+          <line x1="700" y1="0" x2="700" y2="280"/>
+          
+          <line x1="0" y1="70" x2="800" y2="70"/>
+          <line x1="0" y1="140" x2="800" y2="140"/>
+          <line x1="0" y1="210" x2="800" y2="210"/>
+        </g>
+        
+        <!-- Intersecting Abstract Shapes -->
+        <circle cx="240" cy="140" r="90" fill="${fillAccent}" opacity="0.12"/>
+        <circle cx="560" cy="140" r="75" stroke="${fillAccent}" stroke-width="1.5" fill="none" opacity="0.35"/>
+        
+        <!-- Angled Editorial Lines -->
+        <g stroke="${fillAccent}" stroke-width="1.5" opacity="0.3">
+          <line x1="150" y1="220" x2="650" y2="60"/>
+          <line x1="170" y1="220" x2="670" y2="60" stroke-dasharray="6 6"/>
+        </g>
+        
+        <!-- Minimal geometric polygons -->
+        <rect x="360" y="90" width="100" height="100" fill="none" stroke="${strokeColor}" stroke-width="1" opacity="0.2"/>
+        <polygon points="360,90 460,90 360,190" fill="${fillAccent}" opacity="0.12"/>
+        
+        <!-- Tiny Accent dots -->
+        <circle cx="150" cy="100" r="4" fill="${fillAccent}"/>
+        <circle cx="650" cy="180" r="4" fill="${fillAccent}"/>
+        <circle cx="200" cy="200" r="2.5" fill="${strokeColor}" opacity="0.4"/>
+        <circle cx="600" cy="80" r="2.5" fill="${strokeColor}" opacity="0.4"/>
+      </svg>
+    `;
+  }
+
   function initApp() {
+    // Dynamic Edition Number Calculations (Reference Launch: June 1, 2025)
+    const launchDate = new Date('2025-06-01');
+    const today = new Date();
+    
+    // Parse lastUpdated if present, otherwise fallback to today
+    const activeDate = state.lastUpdated ? new Date(state.lastUpdated) : today;
+    
+    const diffTime = Math.abs(activeDate - launchDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const editionNumber = diffDays;
+    
+    const dayName = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(activeDate);
+    
+    // Set dynamically calculated edition branding
+    document.getElementById('edition-title').textContent = `${dayName} Brief`;
+    document.getElementById('edition-number').textContent = `Edition #${editionNumber}`;
+
     // Render last updated date
     if (state.lastUpdated) {
       const date = new Date(state.lastUpdated);
@@ -81,6 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
       setupCountdown(state.lastUpdated);
     }
     
+    // Total reading time calculation (e.g. 8 minutes total)
+    const totalReadingTime = state.stories.reduce((sum, story) => sum + (story.read_time || 3), 0);
+    document.getElementById('edition-reading-time').textContent = `You'll finish reading in about ${totalReadingTime} minutes.`;
+
     setupCategoryFilters();
     renderStories();
 
@@ -151,12 +249,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const now = new Date();
       const diff = nextUpdate - now;
       if (diff <= 0) {
-        countdownEl.textContent = "Feed updates: Ready to refresh";
+        countdownEl.textContent = "Next edition ready to refresh";
         return;
       }
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      countdownEl.textContent = `Next update in ${hours}h ${minutes}m`;
+      countdownEl.textContent = `Next edition in ${hours}h ${minutes}m`;
     }
 
     tick();
@@ -207,11 +305,17 @@ document.addEventListener('DOMContentLoaded', () => {
     filteredStories.sort((a, b) => a.rank - b.rank);
 
     if (filteredStories.length === 0) {
-      const viewType = state.viewingBookmarksOnly ? 'bookmarks' : 'stories';
       storyListEl.innerHTML = `
         <div class="empty-state">
-          <h3 class="empty-state-title">No saved stories</h3>
-          <p class="empty-state-text">Bookmark articles by tapping the bookmark icon in the article view to save them for later.</p>
+          <div class="empty-state-card">
+            <div class="empty-state-icon-wrap">
+              <svg viewBox="0 0 24 24">
+                <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/>
+              </svg>
+            </div>
+            <h3 class="empty-state-title">No saved stories yet</h3>
+            <p class="empty-state-text">When a story surprises you, inspires you, or teaches you something, save it here for later.</p>
+          </div>
         </div>
       `;
       return;
@@ -219,23 +323,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filteredStories.forEach(story => {
       const card = document.createElement('article');
-      card.className = 'story-card';
       
-      // format rank to 01, 02...
+      // Cover Story vs Regular Card checks
+      const isCoverStory = story.rank === 1 && state.currentCategory === 'All' && !state.viewingBookmarksOnly;
+      card.className = isCoverStory ? 'story-card cover-story' : 'story-card';
+      
+      // Format rank to 01, 02...
       const formattedRank = String(story.rank).padStart(2, '0');
-      const isBookmarked = state.bookmarks.includes(story.rank);
+      const humanReadTime = formatReadTime(story.read_time);
+      const catLower = story.category.toLowerCase();
       
-      card.innerHTML = `
-        <div class="story-rank">${formattedRank}</div>
-        <div class="story-main">
-          <div class="story-meta">
-            <span class="story-category">${story.category}</span>
-            <span class="story-read-time">${story.read_time} min read</span>
+      if (isCoverStory) {
+        // Render Cover Story layout (featured, artwork, larger header)
+        card.innerHTML = `
+          <div class="story-rank">${formattedRank}</div>
+          <div class="editorial-artwork">${generateAbstractArtwork(story.category)}</div>
+          <div class="story-main">
+            <div class="story-meta">
+              <span class="story-category-dot dot-${catLower}"></span>
+              <span class="story-category">${story.category}</span>
+              <span class="bullet-divider">&bull;</span>
+              <span class="story-read-time">${humanReadTime}</span>
+            </div>
+            <h2 class="story-title">${story.title}</h2>
+            <p class="story-excerpt">${story.excerpt}</p>
           </div>
-          <h2 class="story-title">${story.title}</h2>
-          <p class="story-excerpt">${story.excerpt}</p>
-        </div>
-      `;
+        `;
+      } else {
+        // Render minimal List Card layout
+        card.innerHTML = `
+          <div class="story-rank">${formattedRank}</div>
+          <div class="story-main">
+            <div class="story-meta">
+              <span class="story-category-dot dot-${catLower}"></span>
+              <span class="story-category">${story.category}</span>
+              <span class="bullet-divider">&bull;</span>
+              <span class="story-read-time">${humanReadTime}</span>
+            </div>
+            <h2 class="story-title">${story.title}</h2>
+            <p class="story-excerpt">${story.excerpt}</p>
+          </div>
+        `;
+      }
 
       card.addEventListener('click', () => {
         openReader(story.rank);
@@ -273,14 +402,28 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Populate fields
     readerCategory.textContent = story.category;
-    readerReadTime.textContent = `${story.read_time} min read`;
+    readerReadTime.textContent = formatReadTime(story.read_time);
     readerTitle.textContent = story.title;
     
+    // Story progress numbering (e.g. Story 3 of 10)
+    readerProgressText.textContent = `Story ${story.rank} of 10`;
+    
     // Format paragraph breaks
-    const formattedContent = story.content
-      .split('\n\n')
+    const paragraphs = story.content.split('\n\n');
+    let formattedContent = paragraphs
       .map(para => `<p>${para.trim()}</p>`)
       .join('');
+      
+    // Append the dynamic "why this matters" editorial wrap-up at the end of the text
+    if (story.why_this_matters) {
+      formattedContent += `
+        <div class="reader-why-matters">
+          <span class="reader-why-label">Why this matters</span>
+          ${story.why_this_matters}
+        </div>
+      `;
+    }
+    
     readerBody.innerHTML = formattedContent;
     
     // Source URL

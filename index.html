@@ -22,9 +22,13 @@
       <div class="header-top">
         <div class="brand-section">
           <h1 class="brand-name" id="logo-refresh" onclick="window.location.reload();">briefly</h1>
-          <span class="brand-tagline">News for the intelligent, brief for the busy.</span>
+          <span class="brand-tagline">Updated every morning.</span>
         </div>
         <div class="header-controls">
+          <div class="edition-badge">
+            <span id="edition-title">Daily Edition</span>
+            <span id="edition-number">#—</span>
+          </div>
           <span class="date-display" id="last-updated">Sunday, June 28, 2026</span>
           
           <!-- Bookmarks View Button -->
@@ -51,9 +55,15 @@
     </nav>
 
     <!-- Daily Status Update / Countdown -->
-    <div class="update-banner">
-      <span>10 daily digests aggregated from premium global publications.</span>
-      <span id="update-countdown">Next update in 24h 00m</span>
+    <div class="update-banner" id="masthead-metadata">
+      <div class="meta-left">
+        <span id="edition-welcome">Good morning.</span>
+        <span id="edition-meta-text">Today's edition contains 10 carefully selected stories.</span>
+        <span id="edition-reading-time" class="meta-reading-time">Worth your coffee.</span>
+      </div>
+      <div class="meta-right">
+        <span id="update-countdown">Next edition tomorrow morning.</span>
+      </div>
     </div>
 
     <!-- Feed Section for 10 Stories -->
@@ -94,7 +104,10 @@
       <!-- Core Article Layout -->
       <div class="reader-content-wrap">
         <div class="reader-meta">
+          <span class="story-progress-text" id="reader-progress-text">Story 1 of 10</span>
+          <span class="bullet-divider">&bull;</span>
           <span class="story-category" id="reader-category">World</span>
+          <span class="bullet-divider">&bull;</span>
           <span class="story-read-time" id="reader-read-time">3 min read</span>
         </div>
         
