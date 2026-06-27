@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
       : `<svg viewBox="0 0 24 24"><path d="M12.1 12.1c-.8.8-2 1.3-3.3 1.3-2.6 0-4.7-2.1-4.7-4.7 0-1.3.5-2.5 1.3-3.3C3.6 6.5 2 9.1 2 12c0 5.5 4.5 10 10 10 2.9 0 5.5-1.6 6.6-3.4-.8.8-2 1.3-3.3 1.3-2.6 0-4.7-2.1-4.7-4.7 0-1.3.5-2.5 1.5-3.1z"/></svg>`;
   }
 
-  // Load Data
-  fetch('data/stories.json')
+  // Load Data (with no-store cache control for fresh daily briefs)
+  fetch('data/stories.json', { cache: 'no-store' })
     .then(res => {
       if (!res.ok) throw new Error('Data file not found');
       return res.json();
