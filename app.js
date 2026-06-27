@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const readerPanel = document.getElementById('reader-panel');
   const readerCloseBtn = document.getElementById('reader-close-btn');
   const readerProgressBar = document.getElementById('reader-progress-bar');
+  const readerContentWrap = document.getElementById('reader-content-wrap');
+  const completionPanel = document.getElementById('completion-panel');
+  const completionCloseBtn = document.getElementById('completion-close-btn');
+  const completionTitleText = document.getElementById('completion-title-text');
+  
   const readerCategory = document.getElementById('reader-category');
   const readerReadTime = document.getElementById('reader-read-time');
   const readerTitle = document.getElementById('reader-title');
@@ -87,64 +92,73 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'Deep read';
   }
 
-  // Dynamic Abstract Geometric Editorial Artwork Generator
+  // Dynamic Hand-Drawn-Style Minimalist Editorial Artwork Generator
   function generateAbstractArtwork(category) {
     const colors = {
-      'World': { primary: '#9c8e75', secondary: '#FAF9F6' },
-      'India': { primary: '#df8137', secondary: '#FFF8F2' },
-      'Business': { primary: '#378b60', secondary: '#F2FAF5' },
-      'Technology': { primary: '#4e8098', secondary: '#F2F7FA' },
-      'Science': { primary: '#8652cc', secondary: '#F7F2FA' },
-      'Sports': { primary: '#c54848', secondary: '#FAF2F2' },
-      'Entertainment': { primary: '#bfa054', secondary: '#FAF8F2' }
+      'World': { primary: '#C5A059', secondary: '#FAF9F6' },
+      'India': { primary: '#E08A3C', secondary: '#FFF8F2' },
+      'Business': { primary: '#3D9460', secondary: '#F2FAF5' },
+      'Technology': { primary: '#4E8098', secondary: '#F2F7FA' },
+      'Science': { primary: '#7D53B2', secondary: '#F7F2FA' },
+      'Sports': { primary: '#E07A5F', secondary: '#FAF2F2' },
+      'Entertainment': { primary: '#C5A059', secondary: '#FAF8F2' }
     };
     
     const theme = document.documentElement.getAttribute('data-theme') || 'light';
-    const c = colors[category] || { primary: '#8C7B65', secondary: '#FAF9F6' };
+    const c = colors[category] || { primary: '#C5A059', secondary: '#FAF9F6' };
     
     const fillAccent = c.primary;
     const fillBg = theme === 'dark' ? '#14171A' : c.secondary;
     const strokeColor = theme === 'dark' ? '#ECE9DF' : '#1A1A1A';
-    const opacity = theme === 'dark' ? '0.12' : '0.06';
+    const opacityLine = theme === 'dark' ? '0.2' : '0.1';
+    const opacityHatch = theme === 'dark' ? '0.1' : '0.05';
+    
+    // Generate fine vertical lines to resemble an engraving / newspaper print sketch
+    let hatching = '';
+    for (let i = 25; i < 780; i += 12) {
+      hatching += `<line x1="${i}" y1="15" x2="${i - 20}" y2="265" stroke="${strokeColor}" stroke-width="0.5" opacity="${opacityHatch}" />`;
+    }
     
     return `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="100%" height="100%">
         <rect width="100%" height="100%" fill="${fillBg}"/>
         
-        <!-- Abstract Grid -->
-        <g stroke="${strokeColor}" stroke-width="0.5" opacity="${opacity}">
-          <line x1="100" y1="0" x2="100" y2="280"/>
-          <line x1="200" y1="0" x2="200" y2="280"/>
-          <line x1="300" y1="0" x2="300" y2="280"/>
-          <line x1="400" y1="0" x2="400" y2="280"/>
-          <line x1="500" y1="0" x2="500" y2="280"/>
-          <line x1="600" y1="0" x2="600" y2="280"/>
-          <line x1="700" y1="0" x2="700" y2="280"/>
+        <!-- Engraving Hatching Background Texture -->
+        <g>${hatching}</g>
+        
+        <!-- Restrained Thin Broadsheet Frame Border -->
+        <rect x="15" y="15" width="770" height="250" fill="none" stroke="${strokeColor}" stroke-width="0.5" opacity="${opacityLine * 2.5}"/>
+        
+        <!-- Concentric Engraved Layout Details -->
+        <g stroke="${strokeColor}" fill="none" stroke-width="0.8">
+          <circle cx="400" cy="140" r="95" opacity="${opacityLine * 1.5}"/>
+          <circle cx="400" cy="140" r="75" opacity="${opacityLine}"/>
+          <circle cx="400" cy="140" r="55" opacity="${opacityLine * 0.5}"/>
           
-          <line x1="0" y1="70" x2="800" y2="70"/>
-          <line x1="0" y1="140" x2="800" y2="140"/>
-          <line x1="0" y1="210" x2="800" y2="210"/>
+          <!-- Axis alignments -->
+          <line x1="50" y1="140" x2="750" y2="140" opacity="${opacityLine * 2}"/>
+          <line x1="400" y1="35" x2="400" y2="245" opacity="${opacityLine * 1.5}"/>
+          
+          <!-- Focal rays -->
+          <line x1="310" y1="50" x2="490" y2="230" opacity="${opacityLine}"/>
+          <line x1="490" y1="50" x2="310" y2="230" opacity="${opacityLine}"/>
         </g>
         
-        <!-- Intersecting Abstract Shapes -->
-        <circle cx="240" cy="140" r="90" fill="${fillAccent}" opacity="0.12"/>
-        <circle cx="560" cy="140" r="75" stroke="${fillAccent}" stroke-width="1.5" fill="none" opacity="0.35"/>
+        <!-- Minimal Muted accent focus points -->
+        <circle cx="400" cy="140" r="25" fill="${fillAccent}" opacity="0.15"/>
+        <polygon points="375,140 400,95 425,140" fill="${fillAccent}" opacity="0.1"/>
         
-        <!-- Angled Editorial Lines -->
-        <g stroke="${fillAccent}" stroke-width="1.5" opacity="0.3">
-          <line x1="150" y1="220" x2="650" y2="60"/>
-          <line x1="170" y1="220" x2="670" y2="60" stroke-dasharray="6 6"/>
+        <!-- Blueprint-style ticks -->
+        <g stroke="${strokeColor}" stroke-width="1.2" opacity="0.5">
+          <line x1="400" y1="20" x2="400" y2="28"/>
+          <line x1="400" y1="252" x2="400" y2="260"/>
+          <line x1="25" y1="140" x2="33" y2="140"/>
+          <line x1="767" y1="140" x2="775" y2="140"/>
         </g>
         
-        <!-- Minimal geometric polygons -->
-        <rect x="360" y="90" width="100" height="100" fill="none" stroke="${strokeColor}" stroke-width="1" opacity="0.2"/>
-        <polygon points="360,90 460,90 360,190" fill="${fillAccent}" opacity="0.12"/>
-        
-        <!-- Tiny Accent dots -->
-        <circle cx="150" cy="100" r="4" fill="${fillAccent}"/>
-        <circle cx="650" cy="180" r="4" fill="${fillAccent}"/>
-        <circle cx="200" cy="200" r="2.5" fill="${strokeColor}" opacity="0.4"/>
-        <circle cx="600" cy="80" r="2.5" fill="${strokeColor}" opacity="0.4"/>
+        <!-- Broadsheet Technical Text Notes -->
+        <text x="35" y="40" font-family="'Inter', sans-serif" font-size="9" font-weight="600" letter-spacing="2" fill="${strokeColor}" opacity="0.45">${category.toUpperCase()} DIAGRAM</text>
+        <text x="735" y="245" font-family="'Inter', sans-serif" font-size="9" font-weight="600" fill="${strokeColor}" opacity="0.45">NO. ${category.charCodeAt(0) % 99}</text>
       </svg>
     `;
   }
@@ -164,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dayName = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(activeDate);
     
     // Set dynamically calculated edition branding
-    document.getElementById('edition-title').textContent = `${dayName} Brief`;
+    document.getElementById('edition-title').textContent = `${dayName} Edition`;
     document.getElementById('edition-number').textContent = `Edition #${editionNumber}`;
 
     // Render last updated date
@@ -176,8 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Total reading time calculation (e.g. 8 minutes total)
-    const totalReadingTime = state.stories.reduce((sum, story) => sum + (story.read_time || 3), 0);
-    document.getElementById('edition-reading-time').textContent = `You'll finish reading in about ${totalReadingTime} minutes.`;
+    const totalReadingTime = state.stories.reduce((sum, story) => sum + (story.read_time || 2), 0);
+    document.getElementById('edition-reading-time').textContent = `You'll finish today's 10 stories in about ${totalReadingTime} minutes.`;
 
     setupCategoryFilters();
     renderStories();
@@ -202,6 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close Reader Event Listeners
     readerCloseBtn.addEventListener('click', closeReader);
+    completionCloseBtn.addEventListener('click', closeReader);
+    
     readerOverlay.addEventListener('click', (e) => {
       if (e.target === readerOverlay) closeReader();
     });
@@ -213,6 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Track scroll in reader panel for progress bar
     readerPanel.addEventListener('scroll', () => {
+      // Only track if completion panel is NOT active
+      if (completionPanel.classList.contains('active')) {
+        readerProgressBar.style.width = '100%';
+        return;
+      }
       const scrollTop = readerPanel.scrollTop;
       const scrollHeight = readerPanel.scrollHeight - readerPanel.clientHeight;
       if (scrollHeight > 0) {
@@ -230,12 +251,15 @@ document.addEventListener('DOMContentLoaded', () => {
       renderStories(); // refresh main feed cards
     });
 
-    // Next Article Click in Reader
+    // Next Article / Complete Edition Click in Reader
     nextArticleNav.addEventListener('click', () => {
       const currentRank = state.currentOpenStoryRank;
       const nextStory = state.stories.find(s => s.rank === currentRank + 1);
       if (nextStory) {
         openReader(nextStory.rank);
+      } else if (currentRank === 10) {
+        // Last story complete - launch quiet completion screen
+        showCompletionScreen();
       }
     });
   }
@@ -305,16 +329,17 @@ document.addEventListener('DOMContentLoaded', () => {
     filteredStories.sort((a, b) => a.rank - b.rank);
 
     if (filteredStories.length === 0) {
+      // Warm Bookmark Empty State with custom outline SVG icon and instructions
       storyListEl.innerHTML = `
         <div class="empty-state">
           <div class="empty-state-card">
             <div class="empty-state-icon-wrap">
               <svg viewBox="0 0 24 24">
-                <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/>
+                <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
               </svg>
             </div>
-            <h3 class="empty-state-title">No saved stories yet</h3>
-            <p class="empty-state-text">When a story surprises you, inspires you, or teaches you something, save it here for later.</p>
+            <h3 class="empty-state-title">The best stories deserve a second read.</h3>
+            <p class="empty-state-text">Save stories worth revisiting for later reference.</p>
           </div>
         </div>
       `;
@@ -334,10 +359,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const catLower = story.category.toLowerCase();
       
       if (isCoverStory) {
-        // Render Cover Story layout (featured, artwork, larger header)
+        // Render Cover Story layout ordered: Category -> Large headline -> Excerpt -> Illustration underneath
         card.innerHTML = `
           <div class="story-rank">${formattedRank}</div>
-          <div class="editorial-artwork">${generateAbstractArtwork(story.category)}</div>
           <div class="story-main">
             <div class="story-meta">
               <span class="story-category-dot dot-${catLower}"></span>
@@ -348,9 +372,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <h2 class="story-title">${story.title}</h2>
             <p class="story-excerpt">${story.excerpt}</p>
           </div>
+          <div class="editorial-artwork">${generateAbstractArtwork(story.category)}</div>
         `;
       } else {
-        // Render minimal List Card layout
+        // Render regular minimal card layouts (headline is sans-serif in css)
         card.innerHTML = `
           <div class="story-rank">${formattedRank}</div>
           <div class="story-main">
@@ -400,12 +425,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     state.currentOpenStoryRank = rank;
     
+    // Reset reader display states
+    readerContentWrap.style.display = 'block';
+    completionPanel.classList.remove('active');
+    
     // Populate fields
     readerCategory.textContent = story.category;
     readerReadTime.textContent = formatReadTime(story.read_time);
     readerTitle.textContent = story.title;
     
-    // Story progress numbering (e.g. Story 3 of 10)
+    // Story progress numbering
     readerProgressText.textContent = `Story ${story.rank} of 10`;
     
     // Format paragraph breaks
@@ -436,7 +465,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextStory = state.stories.find(s => s.rank === rank + 1);
     if (nextStory) {
       nextArticleNav.style.display = 'flex';
+      nextArticleNav.querySelector('.next-article-label').textContent = 'Next Story';
       nextArticleTitle.textContent = nextStory.title;
+    } else if (rank === 10) {
+      // Story 10 has no next story, so display completion trigger CTA
+      nextArticleNav.style.display = 'flex';
+      nextArticleNav.querySelector('.next-article-label').textContent = 'Edition Complete';
+      nextArticleTitle.textContent = "Complete today's reading &rarr;";
     } else {
       nextArticleNav.style.display = 'none';
     }
@@ -450,9 +485,30 @@ document.addEventListener('DOMContentLoaded', () => {
     readerProgressBar.style.width = '0%';
   }
 
+  // Launch Calm Completion Page View inside the Reader Overlay
+  function showCompletionScreen() {
+    // Hide standard article text wrapper
+    readerContentWrap.style.display = 'none';
+    
+    // Dynamically calculate actual text for current day
+    const activeDate = state.lastUpdated ? new Date(state.lastUpdated) : new Date();
+    const dayName = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(activeDate);
+    
+    completionTitleText.textContent = `${dayName} Edition Complete`;
+    
+    // Show Completion Overlay Panel
+    completionPanel.classList.add('active');
+    readerProgressBar.style.width = '100%';
+    readerPanel.scrollTop = 0;
+  }
+
   function closeReader() {
     readerOverlay.classList.remove('active');
     document.body.style.overflow = '';
     state.currentOpenStoryRank = null;
+    
+    // Reset view variables
+    readerContentWrap.style.display = 'block';
+    completionPanel.classList.remove('active');
   }
 });

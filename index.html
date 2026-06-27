@@ -102,7 +102,7 @@
       </div>
 
       <!-- Core Article Layout -->
-      <div class="reader-content-wrap">
+      <div class="reader-content-wrap" id="reader-content-wrap">
         <div class="reader-meta">
           <span class="story-progress-text" id="reader-progress-text">Story 1 of 10</span>
           <span class="bullet-divider">&bull;</span>
@@ -121,10 +121,7 @@
         <footer class="reader-footer">
           <div class="source-link-wrap">
             <a href="#" target="_blank" rel="noopener noreferrer" class="source-link" id="reader-source-link">
-              Read original coverage
-              <svg viewBox="0 0 24 24">
-                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
-              </svg>
+              Original reporting &rarr;
             </a>
           </div>
 
@@ -134,6 +131,22 @@
             <span class="next-article-title" id="next-article-title">Heading of the next article</span>
           </div>
         </footer>
+      </div>
+
+      <!-- Completion Screen Layout -->
+      <div class="completion-panel" id="completion-panel">
+        <div class="completion-icon-wrap">
+          <svg viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+        </div>
+        <h2 class="completion-title" id="completion-title-text">Daily Edition Complete</h2>
+        <div class="completion-stats">
+          <span id="completion-stories-count">10 stories read</span>
+          <span id="completion-time-spent">Estimated reading time completed</span>
+        </div>
+        <p class="completion-message">You’re caught up. See you tomorrow.</p>
+        <button class="btn-completion-close" id="completion-close-btn">Return to Front Page</button>
       </div>
 
     </article>

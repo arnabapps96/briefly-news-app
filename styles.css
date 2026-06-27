@@ -268,9 +268,9 @@ header {
   position: relative;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+              background-color 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .story-card:last-child {
@@ -279,8 +279,55 @@ header {
 
 .story-card:hover {
   background-color: var(--bg-secondary);
-  transform: translateY(-2px) scale(1.003);
+  transform: translateY(-2px) scale(1.002);
   box-shadow: var(--card-shadow);
+}
+
+/* Story Details Layout */
+.story-main {
+  flex-grow: 1;
+  position: relative;
+  z-index: 2; /* Ensure text is above watermark rank */
+}
+
+.story-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.story-category {
+  color: var(--accent-color);
+}
+
+.story-read-time {
+  color: var(--text-muted);
+}
+
+.story-title {
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+  transition: color 0.2s ease;
+}
+
+.story-card:hover .story-title {
+  color: var(--accent-color);
+}
+
+.story-excerpt {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 300;
 }
 
 /* Oversized Watermark Numerals */
@@ -772,4 +819,81 @@ header {
     margin-top: 2.5rem;
     padding-top: 1.5rem;
   }
+}
+
+/* Calm Completion Screen Styling */
+.completion-panel {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  max-width: 480px;
+  margin: auto;
+  padding: 3rem 1.5rem;
+}
+
+.completion-panel.active {
+  display: flex;
+}
+
+.completion-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  margin-bottom: 2rem;
+}
+
+.completion-icon-wrap svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  fill: currentColor;
+}
+
+.completion-title {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 1.2rem;
+  line-height: 1.3;
+}
+
+.completion-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.completion-message {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  font-style: italic;
+}
+
+.btn-completion-close {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.6rem 1.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-completion-close:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--text-muted);
 }
