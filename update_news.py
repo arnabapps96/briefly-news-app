@@ -6,6 +6,8 @@ import urllib.error
 import xml.etree.ElementTree as ET
 import email.utils
 from datetime import datetime, timezone, timedelta
+import subprocess
+
 
 # List of RSS feeds to aggregate raw news from
 FEEDS = {
@@ -300,6 +302,38 @@ def load_env():
                         key, val = line.split("=", 1)
                         os.environ[key.strip()] = val.strip().strip('"').strip("'")
 
+def git_push_changes(file_path):
+    auto_push = os.environ.get("AUTO_PUSH_TO_GITHUB", "false").lower() == "true"
+    if not auto_push:
+        return
+        
+    print("AUTO_PUSH_TO_GITHUB is enabled. Preparing to commit and push changes...")
+    try:
+        # Check if git is initialized
+        work_dir = os.path.dirname(os.path.abspath(__file__))
+        git_dir = os.path.join(work_dir, ".git")
+        if not os.path.exists(git_dir):
+            print("Warning: Local directory is not a git repository. Skipping push.")
+            return
+
+        # Add stories.json
+        subprocess.run(["git", "add", file_path], check=True, cwd=work_dir)
+        
+        # Check if there is anything to commit
+        status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True, cwd=work_dir)
+        if not status.stdout.strip():
+            print("No changes to commit in stories.json.")
+            return
+            
+        # Commit changes
+        subprocess.run(["git", "commit", "-m", "Daily news update [skip ci]"], check=True, cwd=work_dir)
+        
+        # Push changes to remote origin on main branch
+        subprocess.run(["git", "push", "origin", "main"], check=True, cwd=work_dir)
+        print("Successfully pushed latest news updates to GitHub!")
+    except Exception as e:
+        print(f"Error executing auto git push: {e}")
+
 def main():
     load_env()
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -343,6 +377,9 @@ def main():
         json.dump(stories_data, f, indent=2, ensure_ascii=False)
         
     print(f"Successfully updated stories. Saved to {output_path}")
+    
+    # Run git auto push if enabled
+    git_push_changes(output_path)
 
 if __name__ == "__main__":
     main()
