@@ -1,0 +1,38 @@
+name: Daily News Update
+
+on:
+  schedule:
+    # Runs daily at 00:30 UTC (which is 6:00 AM IST)
+    - cron: '30 0 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub web UI
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run news update script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          LOOKBACK_HOURS: 48
+          AUTO_PUSH_TO_GITHUB: false # Handled by the github action step below
+        run: |
+          python update_news.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stories.json
+          # Only commit if stories.json has actually changed
+          git diff-index --quiet HEAD || (git commit -m "Daily news update [skip ci]" && git push)
